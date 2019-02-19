@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="">
-<!--
+  <!--
 
 KEYWORDS!
 
@@ -15,43 +15,70 @@ canplaythrough event
 duration
 currentTime
 -->
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scroll in video</title>
     <style>
+      .outerVideoContainer {
+        overflow: scroll;
+        height: 432px;
+      }
 
-        .outerVideoContainer {
+      .innerVideoContainer {
+        height: 1064px;
+      }
 
-        }
-
-        .innerVideoContainer {
-
-
-
-        }
-
-        video {
-
-
-        }
-
-
+      video {
+        position: fixed;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="outerVideoContainer">
-        <div class="innerVideoContainer">
-            <video src="video/theVideo.mp4" width="768" height="432"></video>
-        </div>
+      <div class="innerVideoContainer">
+        <video src="video/theVideo.mp4" width="768" height="432"></video>
+      </div>
     </div>
 
     <script>
+      document.addEventListener("DOMContentLoaded", init);
+      let outScrollHeight = document.querySelector(".outerVideoContainer")
+        .scrollHeight;
+      let outClientHeight = document.querySelector(".outerVideoContainer")
+        .clientHeight;
+      let vid = document.querySelector("video");
 
+      function init() {
+        loadVideo();
+      }
+      function loadVideo() {
+        vid.addEventListener("canplaythrough", videoLenght);
+      }
 
+      function videoLenght() {
+        vid.duration;
+        console.log("Video Duration is " + vid.duration);
+        document
+          .querySelector(".outerVideoContainer")
+          .addEventListener("scroll", scrollFunc);
+      }
 
+      function scrollFunc(evt) {
+        let scrollDistance = outScrollHeight - outClientHeight;
+        let scrollPosition = evt.target.scrollTop;
+        console.log("Scrolltop", scrollPosition);
+        let scrollTime = (scrollPosition / scrollDistance) * 100;
+        console.log(scrollTime);
+
+        let videoPrc = vid.duration / 100;
+        console.log(videoPrc * scrollTime);
+
+        let videoCurrentTime = videoPrc * scrollTime;
+
+        vid.currentTime = videoCurrentTime;
+      }
     </script>
-</body>
-
+  </body>
 </html>
